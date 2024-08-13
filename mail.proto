@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+option go_package = "./mail-service";
+
+package otp;
+
+service MailService {
+    rpc SendOnboardingEmail(AccountOnboardingEmail) returns (AccountOnboardingEmailResponse) {}
+    rpc SendAccountRegistrationEmailAction(AccountRegistrationActionEmail) returns (AccountRegistrationActionResponse) {}
+    rpc SendAccountEmailVerification(AccountEmailVerification) returns (AccountEmailVerificationResponse) {}
+    rpc SendVerificationMessage(SendKorlabVerificationEmail) returns (SendKorlabVerificationResponse) {}
+    rpc SendAdminRegistrationEmail(SendAdminRegistrationEmailRequest) returns (SendAdminRegistrationEmailResponse){}
+  
+    // TODO Find a time to unfrozen and discuss this function
+    // For now, this function is frozen waiting for further notice from management team
+    // the main reason for being frozen is, there's not enough time to develop the function while trying to meet the deadline.
+    //rpc SendEmailResetPassword(EmailResetPasswordData) returns (EmailResetPasswordResponse) {}
+}
+
+// For Account Registration Request, the purpose of this struct is to inform the user that their account has been created and can be use to log in into
+// the respective application but can't use the features just yet, also stating that their account is waiting for approval by either korlap / management
+message AccountOnboardingEmail {
+  string receiverEmail = 1;
+  string emailSubject = 2;
+  string receiverName = 4;
+  string emailContent = 5;
+  string registeredAs = 6;
+}
+message AccountOnboardingEmailResponse {
+  uint32 response = 1;
+  string message = 2;
+}
+
+// This struct is used for sending email regarding the account request status, the are 2 cases
+// 1. The account request is accepted
+// 2. The account request is rejected
+// Both options can have an additional email content
+message AccountRegistrationActionEmail {
+  string receiverEmail = 1;
+  string emailSubject = 2;
+  string receiverName = 3;
+  string emailContent = 4;
+  bool isApproved = 5;
+  string registeredAs = 6;
+}
+message AccountRegistrationActionResponse {
+  uint32 response = 1;
+  string message = 2;
+}
+
+// For user who wants to verify their account email
+message AccountEmailVerification {
+  string receiverEmail = 1;
+  string emailSubject = 2;
+  string verificationLink = 3;
+  string receiverName = 4;
+  string emailContent = 5;
+  string expiresIn = 6;
+}
+message AccountEmailVerificationResponse {
+  uint32 response = 1;
+  string message = 2;
+}
+
+// For sending verification response
+message SendKorlabVerificationEmail {
+  string receiverEmail = 1;
+  string emailSubject = 2;
+  string receiverName = 3;
+  string emailContent = 4;
+}
+message SendKorlabVerificationResponse {
+  uint32 response = 1;
+  string message = 2;
+}
+
+// For Administrator Registration
+message SendAdminRegistrationEmailRequest {
+  string receiverEmail = 1;
+  string emailSubject = 2;
+  string receiverName = 3;
+  string emailContent = 4;
+}
+message SendAdminRegistrationEmailResponse {
+  uint32 response = 1;
+  string message = 2;
+}
+
+// For Password Resets
+message EmailResetPasswordData {
+  string receiverEmail = 1;
+  string emailSubject = 2;
+  string verificationLink = 3;
+  string timeLimit = 4;
+}
+message EmailResetPasswordResponse {
+  uint32 response = 1;
+  string message = 2;
+}
